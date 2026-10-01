@@ -4,7 +4,7 @@ Custom Morphe patches for **Your Calendar Widget 1.71.3** (`de.mash.android.cale
 
 ## Import on Android
 
-1. Download `patches-1.0.0.mpp` from this repository's release or the provided original file.
+1. Download `patches-1.0.1.mpp` from this repository's release or the provided original file.
 2. In Morphe Manager, import the bundle as a local custom patch source/file (menu wording depends on Manager version).
 3. Select the original Your Calendar Widget 1.71.3 APK.
 4. Keep **Hide Free Edition reminder events** enabled.
@@ -19,7 +19,14 @@ The optional premium patch changes the two local `Utility.isProVersion` checks (
 
 Based on the official `MorpheApp/morphe-patches-template`, commit `0bbf39c4ff24c7799104f510b165e67c55b9d9cf`. GPLv3; retain upstream LICENSE/NOTICE.
 
-Use JDK 21 and a GitHub token permitted to read public GitHub Packages:
+The default build needs only Python 3 and Java 21, and uses hash-pinned public toolchain artifacts:
+
+```sh
+python3 scripts/build_public.py
+python3 tests/verify_bundle.py
+```
+
+The original Gradle build remains available as an alternative. Its official Morphe plugin is hosted on GitHub Packages and needs a GitHub token with `read:packages`; pass credentials through environment variables, never committed files:
 
 ```sh
 export GITHUB_ACTOR=your-github-user
@@ -27,9 +34,9 @@ export GITHUB_ACTOR=your-github-user
 ./gradlew buildAndroid --no-daemon
 ```
 
-Output: `patches/build/libs/patches-1.0.0.mpp`. No Android SDK is needed because these are bytecode-only patches with no Android extension.
+Output: `patches/build/libs/patches-1.0.1.mpp`. No Android SDK or APK is needed to build these bytecode-only patches.
 
-The official GitHub semantic-release workflow is retained in `.github/workflows/release.yml`. It is **not a verified Forgejo Actions release workflow**: it requires GitHub-specific credentials and APIs. The initial Forgejo release is uploaded from a locally verified build; GitHub/Forgejo CI activation is a separate acceptance gate. Do not put personal/organization tokens on the shared buildserver.
+`.forgejo/workflows/release.yml` builds on the existing `collective-android` runner, verifies Morphe discovery and publishes tagged bundles using the ephemeral repository job token. No personal/organization tokens are placed on the shared buildserver. `.github/workflows/release.yml` is an optional build-only workflow for a GitHub mirror; the Forgejo workflow owns releases.
 
 ## Acceptance
 
@@ -44,8 +51,8 @@ Applied using official Morphe Desktop 1.18.0, patcher 1.14.1, against an APK fro
 Example local verification (keep APKs and decompiled code outside this repository):
 
 ```sh
-java -jar morphe-desktop.jar patch original.apk -p patches-1.0.0.mpp --bytecode-mode=FULL -o reminder.apk
-java -jar morphe-desktop.jar patch original.apk -p patches-1.0.0.mpp -e 'Enable local premium features' --bytecode-mode=FULL -o premium.apk
+java -jar morphe-desktop.jar patch original.apk -p patches-1.0.1.mpp --bytecode-mode=FULL -o reminder.apk
+java -jar morphe-desktop.jar patch original.apk -p patches-1.0.1.mpp -e 'Enable local premium features' --bytecode-mode=FULL -o premium.apk
 python3 tests/verify_smali.py original-decoded reminder-decoded
 python3 tests/verify_smali.py original-decoded premium-decoded --premium
 ```

@@ -122,8 +122,10 @@ gradle-app.setting
 # Dependency directories
 node_modules/
 
-# gradle properties, due to Github token
-./gradle.properties
+# Checked-in version/JVM settings contain no credentials.
+!gradle.properties
+.build-tools/
+__pycache__/
 
 # Ignore IDEA files
 .idea/
