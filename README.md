@@ -48,6 +48,14 @@ Output: `patches/build/libs/patches-1.0.2.mpp`. No Android SDK or APK is needed 
 
 ## Acceptance
 
+### v1.0.2 Premium default regression
+
+- Reproduced the v1.0.1 normal-mode behavior in official Android Morphe Manager 1.33.0: selecting the original APK immediately applied **1 patch**, because Premium was default-disabled. `tests/verify_defaults.py` was red for the old bundle.
+- Updated the already-installed remote source to v1.0.2 and repeated the same ordinary app-tile flow, without expert selection. Manager completed with **Patched / 2 patches / Yuna Calendar Patches 1.0.2**.
+- Exported the actual Manager-generated APK, disassembled it with apktool, and passed `verify_smali.py --premium`: synthetic promotion generation disabled, both local Pro methods return true, every other Utility instruction stream unchanged.
+- Installed that exported APK and cold-launched the real onboarding activity in the isolated Android emulator.
+- This proves default selection and patch application. It is not a claim that all external Premium integrations work. A handset-specific execution error not reproduced here would still require its patch log.
+
 Repository source registration tested with official **Morphe Manager 1.33.0** in the isolated Android emulator: opened the add-source link above, confirmed Add, downloaded from the public GitHub release without a PAT, and read back the installed remote source. Manager displayed **Yuna Calendar Patches 1.0.1**, enabled, **2 patches / 1 app**. The empty template manifest fails `tests/verify_source.py`; the published manifest passes. This verifies repository-source registration, not only local `.mpp` import.
 
 Applied using official Morphe Desktop 1.18.0, patcher 1.14.1, against an APK from Aptoide:
