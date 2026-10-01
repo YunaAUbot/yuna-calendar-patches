@@ -19,7 +19,7 @@ jobs:
       - name: Verify Morphe discovery and bundle
         run: |
           python3 tests/verify_bundle.py
-          java -jar .build-tools/morphe-desktop-1.18.0-all.jar list-patches --patches=patches/build/libs/patches-$(python3 scripts/version.py).mpp -pv
+          $(python3 scripts/java.py) -jar .build-tools/morphe-desktop-1.18.0-all.jar list-patches --patches=patches/build/libs/patches-$(python3 scripts/version.py).mpp -pv
       - name: Publish tagged bundle
         if: startsWith(github.ref, 'refs/tags/v')
         env:

@@ -11,6 +11,9 @@ import subprocess
 import urllib.request
 import zipfile
 from pathlib import Path
+from java import java_executable
+
+JAVA = java_executable()
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / '.build-tools'
@@ -56,13 +59,13 @@ build.mkdir(parents=True, exist_ok=True)
 classes = build / 'classes.jar'
 sources = sorted((ROOT / 'patches/src/main/kotlin/app/yuna').rglob('*.kt'))
 assert sources, 'No patch sources'
-subprocess.run(['java', '-cp', os.pathsep.join(map(str, compiler)),
+subprocess.run([JAVA, '-cp', os.pathsep.join(map(str, compiler)),
     'org.jetbrains.kotlin.cli.jvm.K2JVMCompiler', '-no-stdlib', '-no-reflect',
     '-classpath', os.pathsep.join(map(str, [desktop, compiler[2], compiler[-1]])),
     '-jvm-target', '17', '-d', str(classes), *map(str, sources)], check=True)
 dex = build / 'dex'
 dex.mkdir(exist_ok=True)
-subprocess.run(['java', '-cp', str(d8), 'com.android.tools.r8.D8', '--release',
+subprocess.run([JAVA, '-cp', str(d8), 'com.android.tools.r8.D8', '--release',
                 '--min-api', '26', '--classpath', str(desktop),
                 '--output', str(dex), str(classes)], check=True)
 output = ROOT / f'patches/build/libs/patches-{version}.mpp'
