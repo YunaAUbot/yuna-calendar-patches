@@ -42,10 +42,11 @@ except urllib.error.HTTPError as e:
                 'SHA256: `' + sha + '`',
         'draft': False, 'prerelease': False}
     release = request('/releases', json.dumps(payload).encode(), 'application/json')
+download_url = 'https://forgejo.horotw.dev/' + repository + '/releases/download/' + urllib.parse.quote(tag, safe='') + '/' + urllib.parse.quote(artifact.name, safe='')
 assets = request(f'/releases/{release["id"]}/assets')
 existing = next((a for a in assets if a['name'] == artifact.name), None)
 if existing:
-    with urllib.request.urlopen(urllib.request.Request(existing['browser_download_url'], headers=headers), timeout=30) as r:
+    with urllib.request.urlopen(urllib.request.Request(download_url, headers=headers), timeout=30) as r:
         assert hashlib.sha256(r.read()).hexdigest() == sha, 'Existing release differs; refusing overwrite'
     asset = existing
 else:
@@ -54,7 +55,7 @@ else:
             + data + f'\r\n--{boundary}--\r\n'.encode())
     asset = request(f'/releases/{release["id"]}/assets?name={urllib.parse.quote(artifact.name)}', body,
                     'multipart/form-data; boundary=' + boundary)
-with urllib.request.urlopen(urllib.request.Request(asset['browser_download_url'], headers=headers), timeout=30) as r:
+with urllib.request.urlopen(urllib.request.Request(download_url, headers=headers), timeout=30) as r:
     assert hashlib.sha256(r.read()).hexdigest() == sha, 'Release download hash mismatch'
 verified = request('/releases/tags/' + urllib.parse.quote(tag))
 assert not verified['draft'] and not verified['prerelease']
