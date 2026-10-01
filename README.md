@@ -36,7 +36,7 @@ export GITHUB_ACTOR=your-github-user
 
 Output: `patches/build/libs/patches-1.0.1.mpp`. No Android SDK or APK is needed to build these bytecode-only patches.
 
-`.forgejo/workflows/release.yml` builds on the existing `collective-android` runner, verifies Morphe discovery and publishes tagged bundles using the ephemeral repository job token. No personal/organization tokens are placed on the shared buildserver. `.github/workflows/release.yml` is an optional build-only workflow for a GitHub mirror; the Forgejo workflow owns releases.
+`.forgejo/workflows/release.yml` builds on the existing `collective-android` runner, verifies Morphe discovery and publishes tagged bundles using the ephemeral repository job token. The job reads release/asset metadata back. Its token cannot read private web download URLs, so binary-download SHA256 verification is performed independently from the owner session; this passed for v1.0.1. No personal/organization tokens are placed on the shared buildserver. `.github/workflows/release.yml` is an optional build-only workflow for a GitHub mirror; the Forgejo workflow owns releases.
 
 ## Acceptance
 

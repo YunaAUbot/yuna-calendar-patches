@@ -45,9 +45,21 @@ except urllib.error.HTTPError as e:
 download_url = 'https://forgejo.horotw.dev/' + repository + '/releases/download/' + urllib.parse.quote(tag, safe='') + '/' + urllib.parse.quote(artifact.name, safe='')
 assets = request(f'/releases/{release["id"]}/assets')
 existing = next((a for a in assets if a['name'] == artifact.name), None)
+def verify_asset(asset):
+    metadata = request(f'/releases/{release["id"]}/assets/{asset["id"]}')
+    assert metadata['name'] == artifact.name and metadata['size'] == len(data), 'Release asset metadata mismatch'
+    assert sha in request('/releases/tags/' + urllib.parse.quote(tag))['body'], 'Declared release hash mismatch'
+    try:
+        with urllib.request.urlopen(urllib.request.Request(download_url, headers=headers), timeout=30) as r:
+            assert hashlib.sha256(r.read()).hexdigest() == sha, 'Release download hash mismatch'
+        print('VERIFIED BINARY SHA256', sha)
+    except urllib.error.HTTPError as e:
+        if e.code != 404 or os.environ.get('RELEASE_ALLOW_METADATA_ONLY') != '1':
+            raise
+        print('VERIFIED API ASSET METADATA; job token cannot access private web downloads. Independent owner download verification is required.')
+
 if existing:
-    with urllib.request.urlopen(urllib.request.Request(download_url, headers=headers), timeout=30) as r:
-        assert hashlib.sha256(r.read()).hexdigest() == sha, 'Existing release differs; refusing overwrite'
+    verify_asset(existing)
     asset = existing
 else:
     boundary = 'YunaPatchBundleBoundary'
@@ -55,8 +67,7 @@ else:
             + data + f'\r\n--{boundary}--\r\n'.encode())
     asset = request(f'/releases/{release["id"]}/assets?name={urllib.parse.quote(artifact.name)}', body,
                     'multipart/form-data; boundary=' + boundary)
-with urllib.request.urlopen(urllib.request.Request(download_url, headers=headers), timeout=30) as r:
-    assert hashlib.sha256(r.read()).hexdigest() == sha, 'Release download hash mismatch'
+verify_asset(asset)
 verified = request('/releases/tags/' + urllib.parse.quote(tag))
 assert not verified['draft'] and not verified['prerelease']
 print('VERIFIED RELEASE', verified['html_url'])

@@ -29,6 +29,8 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.event.inputs.release_tag != '')
         env:
           RELEASE_TOKEN: ${{ github.token }}
+          # Job tokens access the API, not private web downloads. Owner must hash-check the download independently.
+          RELEASE_ALLOW_METADATA_ONLY: '1'
           RELEASE_REPOSITORY: ${{ github.repository }}
           RELEASE_TAG: ${{ github.event.inputs.release_tag || github.ref_name }}
         run: python3 scripts/publish_forgejo.py
