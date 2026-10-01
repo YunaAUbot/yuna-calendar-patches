@@ -12,6 +12,7 @@ jobs:
           distribution: temurin
           java-version: '21'
       - run: python3 scripts/build_public.py
+      - run: python3 tests/verify_source.py
       - run: python3 tests/verify_bundle.py
       - uses: actions/upload-artifact@v4
         with:

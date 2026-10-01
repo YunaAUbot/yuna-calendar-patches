@@ -2,7 +2,15 @@
 
 Custom Morphe patches for **Your Calendar Widget 1.71.3** (`de.mash.android.calendar`, tested APK version code 523).
 
-## Import on Android
+## Add as a Morphe source
+
+[**Add Yuna Calendar Patches to Morphe**](https://morphe.software/add-source?github=YunaAUbot/yuna-calendar-patches)
+
+Alternatively, add `https://github.com/YunaAUbot/yuna-calendar-patches` under Morphe Manager's patch sources. The manager resolves the root `patches-bundle.json` on `main`, downloads the public `.mpp` release and discovers the app and patches from the bundle. No GitHub login is needed.
+
+The source manifest is release metadata, not a blank template: it must be refreshed after each GitHub release with the real UTC timestamp (without `Z`, matching Morphe's `LocalDateTime`), version and asset URL. Keep an absent signature `null`; never advertise a nonexistent `.asc` file.
+
+## Manual file import on Android
 
 1. Download `patches-1.0.1.mpp` from this repository's release or the provided original file.
 2. In Morphe Manager, import the bundle as a local custom patch source/file (menu wording depends on Manager version).
