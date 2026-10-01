@@ -48,6 +48,8 @@ Output: `patches/build/libs/patches-1.0.1.mpp`. No Android SDK or APK is needed 
 
 ## Acceptance
 
+Repository source registration tested with official **Morphe Manager 1.33.0** in the isolated Android emulator: opened the add-source link above, confirmed Add, downloaded from the public GitHub release without a PAT, and read back the installed remote source. Manager displayed **Yuna Calendar Patches 1.0.1**, enabled, **2 patches / 1 app**. The empty template manifest fails `tests/verify_source.py`; the published manifest passes. This verifies repository-source registration, not only local `.mpp` import.
+
 Applied using official Morphe Desktop 1.18.0, patcher 1.14.1, against an APK from Aptoide:
 
 - Original SHA256: `ff53d3ea24bf9ea86c7c4c301b732b28e27eeaad513f1aae2dcdd778254ab788`.
