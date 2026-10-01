@@ -57,8 +57,8 @@ val hideFreeEditionEvents = bytecodePatch(
 @Suppress("unused")
 val enableLocalPremiumFeatures = bytecodePatch(
     name = "Enable local premium features",
-    description = "Optional: enables the two local Pro checks. Does not grant a Play purchase or subscription, and cannot guarantee Google/Microsoft account integrations after re-signing.",
-    default = false
+    description = "Enables the two local Pro checks. Enabled by default like the reminder patch; can be deselected. Does not grant a Play purchase or subscription, and cannot guarantee Google/Microsoft account integrations after re-signing.",
+    default = true
 ) {
     compatibleWith(Compatibility(
         name = "Your Calendar Widget",

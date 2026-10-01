@@ -36,7 +36,7 @@ except urllib.error.HTTPError as e:
     payload = {'tag_name': tag, 'target_commitish': 'main', 'name': 'Yuna Calendar Patches ' + version,
         'body': 'Morphe patch bundle for Your Calendar Widget 1.71.3.\n\n'
                 '- Hide Free Edition reminder events: enabled by default.\n'
-                '- Enable local premium features: optional, disabled by default.\n\n'
+                '- Enable local premium features: enabled by default; can be deselected.\n\n'
                 'Import this .mpp in Morphe Manager and patch your own APK. No third-party APK is distributed.\n\n'
                 'Premium only changes the local Pro checks; Google/Microsoft integration and purchases are not guaranteed.\n\n'
                 'SHA256: `' + sha + '`',

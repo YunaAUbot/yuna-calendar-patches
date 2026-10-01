@@ -23,6 +23,7 @@ jobs:
         run: python3 scripts/build_public.py
       - name: Verify Morphe discovery and bundle
         run: |
+          python3 tests/verify_defaults.py
           python3 tests/verify_source.py
           python3 tests/verify_bundle.py
           $(python3 scripts/java.py) -jar .build-tools/morphe-desktop-1.18.0-all.jar list-patches --patches=patches/build/libs/patches-$(python3 scripts/version.py).mpp -pv

@@ -12,11 +12,11 @@ The source manifest is release metadata, not a blank template: it must be refres
 
 ## Manual file import on Android
 
-1. Download `patches-1.0.1.mpp` from this repository's release or the provided original file.
+1. Download `patches-1.0.2.mpp` from this repository's release or the provided original file.
 2. In Morphe Manager, import the bundle as a local custom patch source/file (menu wording depends on Manager version).
 3. Select the original Your Calendar Widget 1.71.3 APK.
 4. Keep **Hide Free Edition reminder events** enabled.
-5. Optionally enable **Enable local premium features** (off by default).
+5. Both **Hide Free Edition reminder events** and **Enable local premium features** are selected by default. Deselect Premium in expert patch selection if you want reminder-only behavior.
 6. Patch and install. Back up widget settings first: the re-signed APK normally cannot update the original Play-signed installation in place.
 
 The reminder patch disables only `Utility.createPromotionEvent`. It does not alter real events, reminders, permissions, purchase records, or the local premium checks.
@@ -42,7 +42,7 @@ export GITHUB_ACTOR=your-github-user
 ./gradlew buildAndroid --no-daemon
 ```
 
-Output: `patches/build/libs/patches-1.0.1.mpp`. No Android SDK or APK is needed to build these bytecode-only patches.
+Output: `patches/build/libs/patches-1.0.2.mpp`. No Android SDK or APK is needed to build these bytecode-only patches.
 
 `.forgejo/workflows/release.yml` builds on the existing `collective-android` runner, verifies Morphe discovery and publishes tagged bundles using the ephemeral repository job token. The job reads release/asset metadata back. Its token cannot read private web download URLs, so binary-download SHA256 verification is performed independently from the owner session; this passed for v1.0.1. No personal/organization tokens are placed on the shared buildserver. `.github/workflows/release.yml` is an optional build-only workflow for a GitHub mirror; the Forgejo workflow owns releases.
 
@@ -61,8 +61,8 @@ Applied using official Morphe Desktop 1.18.0, patcher 1.14.1, against an APK fro
 Example local verification (keep APKs and decompiled code outside this repository):
 
 ```sh
-java -jar morphe-desktop.jar patch original.apk -p patches-1.0.1.mpp --bytecode-mode=FULL -o reminder.apk
-java -jar morphe-desktop.jar patch original.apk -p patches-1.0.1.mpp -e 'Enable local premium features' --bytecode-mode=FULL -o premium.apk
+java -jar morphe-desktop.jar patch original.apk -p patches-1.0.2.mpp -d 'Enable local premium features' --bytecode-mode=FULL -o reminder.apk
+java -jar morphe-desktop.jar patch original.apk -p patches-1.0.2.mpp -e 'Enable local premium features' --bytecode-mode=FULL -o premium.apk
 python3 tests/verify_smali.py original-decoded reminder-decoded
 python3 tests/verify_smali.py original-decoded premium-decoded --premium
 ```
